@@ -24,7 +24,11 @@ namespace Location.Middleware
         public async Task InvokeAsync(HttpContext httpContext)
         {
             //if the ip-geolocation is already saved in session
-            if (httpContext.Session.Get("ip-geolocation") != null) await _next(httpContext);
+            if (httpContext.Session.Get("ip-geolocation") != null)
+            {
+                await _next(httpContext);
+                return;
+            }
 
             //tries to find user's geolocation
             var ip = httpContext.Connection.RemoteIpAddress.ToString();
