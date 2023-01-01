@@ -1,4 +1,6 @@
-using Location.Middleware;
+using Location.Facades;
+using Location.Interfaces;
+using Location.Middlewares;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Services.IpLocation;
@@ -8,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 //adding MVC to the web-application
 builder.Services.AddMvc();
-builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpContextAccessor();
 
 //adding session capabilities to the web-application
 builder.Services.AddSession(options =>
@@ -21,15 +24,19 @@ builder.Services.AddSession(options =>
 //adding the dependency injections
 builder.Services.AddSingleton<ILocationService, IpInfoDb>(x => new IpInfoDb("INSERT YOUR KEY HERE", x.GetRequiredService<IMemoryCache>()));
 builder.Services.AddSingleton<ILocationService, IpApi>();
+builder.Services.AddSingleton<IUserFacade, UserFacade>();
 
 var app = builder.Build();
 
 app.UseSession();
 app.UseMiddleware<LocationMiddleware>();
-app.MapGet("/", (HttpContext context) =>
+app.MapGet("/", (HttpContext context, IUserFacade userFacade) =>
 {
-    var json = context.Session.GetString("ip-geolocation");
-    var location = JsonConvert.DeserializeObject<LocationModel>(json);
-    return $"You location is {location.City} - {location.Country} ({location.CountryCode}).";
+    var location = userFacade.Location;
+
+    return 
+        location != null ?
+        $"You location is {location.City} - {location.Country} ({location.CountryCode})." :
+        "No user location.";
 });
 app.Run();
