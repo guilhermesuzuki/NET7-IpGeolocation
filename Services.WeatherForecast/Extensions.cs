@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.IpLocation
+namespace Services.WeatherForecast
 {
     /// <summary>
     /// Extensions for the Location Service
@@ -12,11 +12,11 @@ namespace Services.IpLocation
     public static class Extensions
     {
         /// <summary>
-        /// Retrieves the next instance of ILocationService available.
+        /// Retrieves the next instance of IWeatherService available.
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static ILocationService? Next(this IEnumerable<ILocationService> services)
+        public static IWeatherService? Next(this IEnumerable<IWeatherService> services)
         {
             if (services != null && services.Any() == true)
             {

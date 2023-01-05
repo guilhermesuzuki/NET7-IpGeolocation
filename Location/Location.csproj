@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Services.IPLocation\Services.IPLocation.csproj" />
+    <ProjectReference Include="..\Services.WeatherForecast\Services.WeatherForecast.csproj" />
   </ItemGroup>
 
 </Project>

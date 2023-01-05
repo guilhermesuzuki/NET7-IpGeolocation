@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Services.IpLocation;
+using Services.WeatherForecast;
 
 namespace Location.Facades
 {
@@ -37,6 +38,27 @@ namespace Location.Facades
                 this._memoryCache.Set(
                     this._httpContextAccessor.HttpContext?.Session.Id +
                     "-cache-iplocation",
+                    value,
+                    new MemoryCacheEntryOptions { SlidingExpiration = new TimeSpan(0, 5, 0) });
+            }
+        }
+
+        /// <summary>
+        /// Gets/sets the user weather in Cache.
+        /// </summary>
+        public WeatherModel? Weather
+        {
+            get
+            {
+                return this._memoryCache.Get<WeatherModel>(
+                    this._httpContextAccessor.HttpContext?.Session.Id +
+                    "-cache-weather");
+            }
+            set
+            {
+                this._memoryCache.Set(
+                    this._httpContextAccessor.HttpContext?.Session.Id +
+                    "-cache-weather",
                     value,
                     new MemoryCacheEntryOptions { SlidingExpiration = new TimeSpan(0, 5, 0) });
             }
